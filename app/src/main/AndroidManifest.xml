@@ -55,6 +55,32 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".localeplugin.EditActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:windowSoftInputMode="adjustResize"/>
+
+        <activity-alias
+            android:name=".localeplugin.PluginActivity"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher1_round"
+            android:label="@string/app_name"
+            android:targetActivity=".localeplugin.EditActivity">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+            </intent-filter>
+        </activity-alias>
+
+        <receiver
+            android:name=".localeplugin.HotSpotBroadcastReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
