@@ -1,5 +1,6 @@
 package com.fitc.wifihotspot;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -12,9 +13,12 @@ import android.preference.PreferenceManager;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+
+import com.fitc.wifihotspot.localeplugin.LogActivity;
 
 import java.util.List;
 
@@ -40,6 +44,16 @@ public class MainActivity extends PermissionsActivity {
         final TextView linkoffTv = findViewById(R.id.linkoff_tv);
         linkoffTv.setMovementMethod(LinkMovementMethod.getInstance());
 
+        findViewById(R.id.open_log).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Activity a = MainActivity.this;
+                        a.startActivity(new Intent(a, LogActivity.class));
+
+                    }
+                }
+        );
 
     }
 

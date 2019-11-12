@@ -15,7 +15,11 @@ class HotSpotBroadcastReceiver : AbstractPluginSettingReceiver() {
 
     override fun firePluginSetting(context: Context, bundle: Bundle) {
 
+        val logger = Logger(context)
+
+        logger.log("Received HotSpot ${if (bundle.hotspotOn) "ON" else "OFF"}")
         Log.i("HotSpotBroadcastReceiver", "Turn HotSpot ${if (bundle.hotspotOn) "ON" else "OFF"}")
+
         WorkManager.getInstance(context).enqueue(
                 OneTimeWorkRequest.Builder(HotSpotWorker::class.java)
                         .setInputData(HotSpotWorker.inputData(bundle.hotspotOn))

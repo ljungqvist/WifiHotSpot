@@ -5,9 +5,10 @@
 
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+    <uses-permission
+        android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.TETHER_PRIVILEGED" />
 
@@ -24,10 +25,13 @@
             android:enabled="true"
             android:exported="true" />
 
-        <receiver android:name=".receiver.HotSpotIntentReceiver" android:enabled="true" android:exported="true">
+        <receiver
+            android:name=".receiver.HotSpotIntentReceiver"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
-                <action android:name="com.fitc.wifihotspot.TURN_ON"/>
-                <action android:name="com.fitc.wifihotspot.TURN_OFF"/>
+                <action android:name="com.fitc.wifihotspot.TURN_ON" />
+                <action android:name="com.fitc.wifihotspot.TURN_OFF" />
             </intent-filter>
         </receiver>
 
@@ -55,12 +59,14 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".localeplugin.LogActivity" />
+
         <activity
             android:name=".localeplugin.EditActivity"
             android:exported="false"
             android:label="@string/app_name"
             android:uiOptions="splitActionBarWhenNarrow"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
 
         <activity-alias
             android:name=".localeplugin.PluginActivity"
@@ -77,7 +83,7 @@
             android:name=".localeplugin.HotSpotBroadcastReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING"/>
+                <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
             </intent-filter>
         </receiver>
 
