@@ -3,7 +3,6 @@ package com.fitc.wifihotspot.localeplugin
 import android.content.Context
 import android.util.Log
 import androidx.work.Data
-import androidx.work.ListenableWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.fitc.wifihotspot.MyOnStartTetheringCallback
@@ -13,32 +12,37 @@ import java.util.concurrent.TimeUnit
 
 class HotSpotWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
 
+    private val manager = MyOreoWifiManager(context)
+
     override fun doWork(): Result {
 
-        val manager = MyOreoWifiManager(applicationContext)
+        return if (inputData.getBoolean(TURN_ON_KEY, false)) {
 
-        if (inputData.getBoolean(TURN_ON_KEY, false)) {
+            var result: Result = Result.retry()
 
             val latch = CountDownLatch(1)
 
             val callback = object : MyOnStartTetheringCallback() {
                 override fun onTetheringStarted() {
                     Log.i("HotSpotWorker", "onTetheringStarted")
+                    result = Result.success()
                     latch.countDown()
                 }
 
                 override fun onTetheringFailed() {
                     Log.i("HotSpotWorker", "onTetheringFailed")
+                    result = Result.failure()
                     latch.countDown()
                 }
             }
 
-            latch.await(5L, TimeUnit.SECONDS)
             manager.startTethering(callback)
+            latch.await(5L, TimeUnit.SECONDS)
+            result
         } else {
             manager.stopTethering()
+            Result.success()
         }
-        return Result.success()
 
     }
 
