@@ -1,7 +1,6 @@
 package com.fitc.wifihotspot.localeplugin
 
 import android.content.Context
-import android.util.Log
 import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
@@ -16,43 +15,39 @@ class HotSpotWorker(context: Context, workerParams: WorkerParameters) : Worker(c
 
     private val manager = MyOreoWifiManager(context)
 
-    override fun doWork(): Result {
-        logger.log("doWork")
+    override fun doWork(): Result =
+            if (inputData.getBoolean(TURN_ON_KEY, false)) {
+                logger.log("W ON")
 
-        return if (inputData.getBoolean(TURN_ON_KEY, false)) {
-            logger.log("doWork ON")
+                var result: Result = Result.retry()
 
-            var result: Result = Result.retry()
+                val latch = CountDownLatch(1)
 
-            val latch = CountDownLatch(1)
+                val callback = object : MyOnStartTetheringCallback() {
+                    override fun onTetheringStarted() {
+                        result = Result.success()
+                        logger.log("W ON SUCCESS")
+                        latch.countDown()
+                    }
 
-            val callback = object : MyOnStartTetheringCallback() {
-                override fun onTetheringStarted() {
-                    Log.i("HotSpotWorker", "onTetheringStarted")
-                    result = Result.success()
-                    logger.log("doWork ON SUCCESS")
-                    latch.countDown()
+                    override fun onTetheringFailed() {
+                        result = Result.failure()
+                        logger.log("W ON FAILED")
+                        latch.countDown()
+                    }
                 }
 
-                override fun onTetheringFailed() {
-                    Log.i("HotSpotWorker", "onTetheringFailed")
-                    result = Result.failure()
-                    logger.log("doWork ON FAILED")
-                    latch.countDown()
-                }
+                manager.startTethering(callback)
+                latch.await(5L, TimeUnit.SECONDS)
+                logger.log("W ON DONE")
+                result
+            } else {
+                logger.log("W OFF")
+                manager.stopTethering()
+                logger.log("W OFF DONE")
+                Result.success()
             }
 
-            manager.startTethering(callback)
-            latch.await(5L, TimeUnit.SECONDS)
-            result
-        } else {
-            logger.log("doWork OFF")
-            manager.stopTethering()
-            logger.log("doWork OFF SUCCESS")
-            Result.success()
-        }
-
-    }
 
     companion object {
         fun inputData(turnOn: Boolean): Data = Data.Builder()

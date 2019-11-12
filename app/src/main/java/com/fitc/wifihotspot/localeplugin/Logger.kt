@@ -15,7 +15,7 @@ class Logger(context: Context) {
         private set
 
     fun log(message: String) = synchronized(logObservableInternal) {
-        log += "${formatter.format(Date())} - $message\n"
+        log = log.trim() + "${formatter.format(Date())} - $message\n"
     }
 
     fun clear() = synchronized(logObservableInternal) {

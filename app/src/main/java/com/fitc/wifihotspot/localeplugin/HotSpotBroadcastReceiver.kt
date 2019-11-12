@@ -17,7 +17,7 @@ class HotSpotBroadcastReceiver : AbstractPluginSettingReceiver() {
 
         val logger = Logger(context)
 
-        logger.log("Received HotSpot ${if (bundle.hotspotOn) "ON" else "OFF"}")
+        logger.log("====> ${if (bundle.hotspotOn) "ON" else "OFF"}")
         Log.i("HotSpotBroadcastReceiver", "Turn HotSpot ${if (bundle.hotspotOn) "ON" else "OFF"}")
 
         WorkManager.getInstance(context).enqueue(
