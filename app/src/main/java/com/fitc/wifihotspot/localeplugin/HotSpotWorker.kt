@@ -14,25 +14,29 @@ class HotSpotWorker(context: Context, workerParams: WorkerParameters) : Worker(c
 
     private val logger = Logger(context)
 
+    private val manager = MyOreoWifiManager(context)
+
     override fun doWork(): Result {
         logger.log("doWork")
 
-        val manager = MyOreoWifiManager(applicationContext)
-
-        if (inputData.getBoolean(TURN_ON_KEY, false)) {
+        return if (inputData.getBoolean(TURN_ON_KEY, false)) {
             logger.log("doWork ON")
+
+            var result: Result = Result.retry()
 
             val latch = CountDownLatch(1)
 
             val callback = object : MyOnStartTetheringCallback() {
                 override fun onTetheringStarted() {
                     Log.i("HotSpotWorker", "onTetheringStarted")
+                    result = Result.success()
                     logger.log("doWork ON SUCCESS")
                     latch.countDown()
                 }
 
                 override fun onTetheringFailed() {
                     Log.i("HotSpotWorker", "onTetheringFailed")
+                    result = Result.failure()
                     logger.log("doWork ON FAILED")
                     latch.countDown()
                 }
@@ -40,13 +44,13 @@ class HotSpotWorker(context: Context, workerParams: WorkerParameters) : Worker(c
 
             manager.startTethering(callback)
             latch.await(5L, TimeUnit.SECONDS)
+            result
         } else {
             logger.log("doWork OFF")
             manager.stopTethering()
             logger.log("doWork OFF SUCCESS")
+            Result.success()
         }
-        logger.log("doWork RETURN")
-        return Result.success()
 
     }
 
