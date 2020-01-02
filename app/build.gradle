@@ -31,6 +31,6 @@ dependencies {
     implementation 'androidx.work:work-runtime:2.2.0'
     implementation 'androidx.work:work-runtime-ktx:2.2.0'
     implementation 'com.linkedin.dexmaker:dexmaker:2.25.0'
-    implementation 'info.ljungqvist:yaol-android:1.7'
+    implementation 'info.ljungqvist:yaol-android:1.7.3'
     implementation 'com.twofortyfouram:android-plugin-client-sdk-for-locale:4.0.3'
 }
